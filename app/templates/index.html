@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Smart Notes</title>
+        <link rel="stylesheet" href="/static/style.css">
+    </head>
+    <body>
+        <h1>Smart Notes</h1>
+        <h2>Neue Notiz</h2>
+        <form action="/create" method="post">
+            <input type="text" name="title" placeholder="Titel" required>
+            <br>
+            <textarea name="content" placeholder="Inhalt"></textarea>
+            <br>
+            <input type="text" name="tags" placeholder="Tags (Komma-getrennt)">
+            <br>
+            <button type="submit">Speichern</button>
+        </form>
+
+        <hr>
+        <h2>Alle Notizen</h2>
+
+        {% for note in notes %}
+            <div class="note">
+                <h3>{{ note.title }}</h3>
+                <p>{{ note.content }}</p>
+                <small>Tags: {{ ", ".join(note.tags) }}</small>
+                <br>
+                <small>{{ note.created_at }}</small>
+            </div>
+            <hr>
+        {% endfor %}
+
+    </body>
+</html>
