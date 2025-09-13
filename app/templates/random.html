@@ -4,7 +4,12 @@
 <div class="note">
   <h3>{{ note.title }}</h3>
   <p>{{ note.content }}</p>
-  <small>Tags: {{ ", ".join(note.tags) }}</small><br />
+  <small>Erstellt am: {{ note.created_at }}</small>
+  <div class="tags">
+    {% for tag in note.tags %}
+    <span class="tag">{{ tag }}</span>
+    {% endfor %}
+  </div>
 </div>
 {% else %}
 <p>Keine Notizen vorhanden.</p>

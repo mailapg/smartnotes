@@ -1,9 +1,10 @@
-from fastapi import APIRouter, Request, Form
+from fastapi import APIRouter, Request, Form, HTTPException
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 from pymongo.collection import Collection
 from datetime import datetime, timezone
 from pathlib import Path
+from bson import ObjectId
 import random
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -31,7 +32,18 @@ def get_notes_router(collection: Collection):
     def random_card(request: Request):
         notes = list(collection.find())
         note = random.choice(notes) if notes else None
+        if note:
+            note["created_at"] = note["created_at"].strftime("%d.%m.%Y %H:%M")
         return templates.TemplateResponse("random.html", {"request": request, "note": note})
+    
+    @router.get("/edit/{note_id}")
+    def edit_form(note_id: str, request: Request):
+        note = collection.find_one({"_id": ObjectId(note_id)})
+        if not note:
+            raise HTTPException(status_code=404, detail="Notiz nicht gefunden")
+        return templates.TemplateResponse(
+            "edit.html", {"request": request, "note": note}
+        )
 
     @router.post("/create")
     def create_note(title: str = Form(...), content: str = Form(...), tags: str = Form("")):
