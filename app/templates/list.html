@@ -1,0 +1,13 @@
+{% extends "index.html" %} {% block content %}
+<h1>Alle Notizen</h1>
+
+{% for note in notes %}
+<div class="note">
+  <h3>{{ note.title }}</h3>
+  <p>{{ note.content }}</p>
+  <small>Tags: {{ ", ".join(note.tags) }}</small>
+  <br />
+  <small>{{ note.created_at }}</small>
+</div>
+{% endfor %}
+{% endblock %}

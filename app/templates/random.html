@@ -1,0 +1,11 @@
+{% extends "index.html" %} {% block content %}
+<h1>Zufällige Notiz</h1>
+{% if note %}
+<div class="note">
+  <h3>{{ note.title }}</h3>
+  <p>{{ note.content }}</p>
+  <small>Tags: {{ ", ".join(note.tags) }}</small><br />
+</div>
+{% else %}
+<p>Keine Notizen vorhanden.</p>
+{% endif %} {% endblock %}
