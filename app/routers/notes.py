@@ -19,6 +19,8 @@ def get_notes_router(collection: Collection):
     @router.get("/list")
     def list_notes(request: Request):
         notes = list(collection.find().sort("created_at", -1))
+        for note in notes: 
+            note["created_at"] = note["created_at"].strftime("%d.%m.%Y %H:%M")
         return templates.TemplateResponse("list.html", {"request": request, "notes": notes})
     
     @router.get("/create")

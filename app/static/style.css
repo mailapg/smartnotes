@@ -58,7 +58,6 @@ form {
     display: flex;
     flex-direction: column;
     gap: 15px;
-    
 }
 
 label {
@@ -97,4 +96,18 @@ button {
 
 button:hover {
     background: #34495e;
+}
+
+.tag {
+  display: inline-block;
+  background: #e0e7ff;
+  color: #1e3a8a;
+  padding: 4px 10px;
+  margin: 2px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  transition: background 0.15s;
+}
+.tag:hover {
+  background: #c7d2fe;
 }

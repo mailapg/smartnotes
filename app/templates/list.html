@@ -5,9 +5,12 @@
 <div class="note">
   <h3>{{ note.title }}</h3>
   <p>{{ note.content }}</p>
-  <small>Tags: {{ ", ".join(note.tags) }}</small>
-  <br />
-  <small>{{ note.created_at }}</small>
+  <div class="tags">
+    {% for tag in note.tags %}
+        <span class="tag">{{ tag }}</span>
+    {% endfor %}
+  </div>
+  <small>Erstellt am: {{ note.created_at }}</small>
 </div>
 {% endfor %}
 {% endblock %}
