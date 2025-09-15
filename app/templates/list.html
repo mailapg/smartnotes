@@ -1,0 +1,27 @@
+{% extends "index.html" %} {% block content %}
+<h1>Alle Notizen</h1>
+
+{% for note in notes %}
+<div class="note">
+  <h3>{{ note.title }}</h3>
+  <p>{{ note.content }}</p>
+  <small>Erstellt am: {{ note.created_at }}</small>
+  <div class="tags">
+    {% for tag in note.tags %}
+    <span class="tag">{{ tag }}</span>
+    {% endfor %}
+  </div>
+
+  <div class="note-actions">
+    <a href="/edit/{{ note._id }}" class="btn btn-edit">
+      <i class="fa-solid fa-pen"></i
+    ></a>
+    <a
+      href="/delete/{{ note._id }}"
+      class="btn btn-delete"
+      onclick="return confirm('Diese Notiz wirklich löschen?');">
+      <i class="fa-solid fa-trash"></i
+    ></a>
+  </div>
+</div>
+{% endfor %} {% endblock %}

@@ -1,0 +1,16 @@
+{% extends "index.html" %} {% block content %}
+<h1>Zufällige Notiz</h1>
+{% if note %}
+<div class="note">
+  <h3>{{ note.title }}</h3>
+  <p>{{ note.content }}</p>
+  <small>Erstellt am: {{ note.created_at }}</small>
+  <div class="tags">
+    {% for tag in note.tags %}
+    <span class="tag">{{ tag }}</span>
+    {% endfor %}
+  </div>
+</div>
+{% else %}
+<p>Keine Notizen vorhanden.</p>
+{% endif %} {% endblock %}
