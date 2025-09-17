@@ -20,14 +20,14 @@ def get_notes_router(collection: Collection):
     @router.get("/list")
     def list_notes(request: Request):
         notes = list(collection.find().sort("created_at", -1))
-        for note in notes: 
+        for note in notes:
             note["created_at"] = note["created_at"].strftime("%d.%m.%Y %H:%M")
         return templates.TemplateResponse("list.html", {"request": request, "notes": notes})
     
     @router.get("/create")
     def create_form(request: Request):
         return templates.TemplateResponse("create.html", {"request": request})
-    
+
     @router.get("/random")
     def random_card(request: Request):
         notes = list(collection.find())
@@ -35,7 +35,7 @@ def get_notes_router(collection: Collection):
         if note:
             note["created_at"] = note["created_at"].strftime("%d.%m.%Y %H:%M")
         return templates.TemplateResponse("random.html", {"request": request, "note": note})
-    
+
     @router.get("/edit/{note_id}")
     def edit_form(note_id: str, request: Request):
         note = collection.find_one({"_id": ObjectId(note_id)})
@@ -46,7 +46,11 @@ def get_notes_router(collection: Collection):
         )
 
     @router.post("/create")
-    def create_note(title: str = Form(...), content: str = Form(...), tags: str = Form("")):
+    def create_note(
+        title: str = Form(...),
+        content: str = Form(...),
+        tags: str = Form("")
+    ):
         note = {
             "title": title,
             "content": content,
@@ -54,6 +58,32 @@ def get_notes_router(collection: Collection):
             "created_at": datetime.now(timezone.utc)
         }
         collection.insert_one(note)
-        return RedirectResponse(url="/", status_code=303)
+        return RedirectResponse(url="/list", status_code=303)
+    
+    @router.post("/edit/{note_id}")
+    def update_note(
+        note_id: str,
+        title: str = Form(...),
+        content: str = Form(...),
+        tags: str = Form("")
+    ):
+        updated = collection.update_one(
+            {"_id": ObjectId(note_id)},
+            {"$set": {
+                "title": title,
+                "content": content,
+                "tags": [tag.strip() for tag in tags.split(",") if tag.strip()]
+            }}
+        )
+        if updated.matched_count == 0:
+            raise HTTPException(status_code=404, detail="Notiz nicht gefunden")
+        return RedirectResponse(url="/list", status_code=303)
+
+    @router.delete("/delete/{note_id}")
+    def delete_note(note_id: str):
+        deleted = collection.delete_one({"_id": ObjectId(note_id)})
+        if deleted.deleted_count == 0:
+            raise HTTPException(status_code=404, detail="Notiz nicht gefunden")
+        return RedirectResponse(url="/list", status_code=303)
 
     return router
