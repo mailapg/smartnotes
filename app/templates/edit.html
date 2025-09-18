@@ -1,7 +1,7 @@
 {% extends "index.html" %}
 
 {% block content %}
-<h1>Notiz bearbeiten</h1>
+<h1><i class="fa-solid fa-code-branch"></i> Notiz bearbeiten</h1>
 
 <form action="/edit/{{ note._id }}" method="post">
   <input type="text" name="title" placeholder="Titel" value="{{ note.title }}" required>
