@@ -1,9 +1,13 @@
 {% extends "index.html" %} {% block content %}
-<h1>Zufällige Notiz</h1>
+<h1><i class="fa-solid fa-code-branch"></i> Erinnere Dich...</h1>
 {% if note %}
+<div class="note-actions">
+  <button onclick="showContent()">Inhalt anzeigen</button>
+  <a href="/random"><button>Nächste Notiz</button></a>
+</div>
 <div class="note">
   <h3>{{ note.title }}</h3>
-  <p>{{ note.content }}</p>
+  <p id="note-content" style="display: none">{{ note.content }}</p>
   <small>Erstellt am: {{ note.created_at }}</small>
   <div class="tags">
     {% for tag in note.tags %}
@@ -11,6 +15,13 @@
     {% endfor %}
   </div>
 </div>
+
+<script>
+  function showContent() {
+    document.getElementById('note-content').style.display = 'block';
+  }
+</script>
+
 {% else %}
 <p>Keine Notizen vorhanden.</p>
 {% endif %} {% endblock %}

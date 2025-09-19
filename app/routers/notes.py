@@ -15,7 +15,7 @@ def get_notes_router(collection: Collection):
 
     @router.get("/")
     def index(request: Request):
-        return templates.TemplateResponse("index.html", {"request": request})
+        return templates.TemplateResponse("home.html", {"request": request})
     
     @router.get("/list")
     def list_notes(request: Request):
