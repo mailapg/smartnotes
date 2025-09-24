@@ -2,26 +2,35 @@
 <h1><i class="fa-solid fa-code-branch"></i> Erinnere Dich...</h1>
 {% if note %}
 <div class="note-actions">
-  <button onclick="showContent()">Inhalt anzeigen</button>
-  <a href="/random"><button>Nächste Notiz</button></a>
+<button id="toggle-btn" onclick="toggleContent()">Inhalt anzeigen</button>
+<a href="/random"><button>Nächste Notiz</button></a>
 </div>
+<br/>
 <div class="note">
-  <h3>{{ note.title }}</h3>
-  <p id="note-content" style="display: none">{{ note.content }}</p>
-  <small>Erstellt am: {{ note.created_at }}</small>
-  <div class="tags">
+<h3>{{ note.title }}</h3>
+<p id="note-content" style="display: none">{{ note.content }}</p>
+<small>Erstellt am: {{ note.created_at }}</small>
+<div class="tags">
     {% for tag in note.tags %}
-    <span class="tag">{{ tag }}</span>
+<span class="tag">{{ tag }}</span>
     {% endfor %}
-  </div>
 </div>
-
+</div>
 <script>
-  function showContent() {
-    document.getElementById('note-content').style.display = 'block';
+  function toggleContent() {
+    const content = document.getElementById('note-content');
+    const btn = document.getElementById('toggle-btn');
+    if (content.style.display === 'none') {
+      content.style.display = 'block';
+      btn.textContent = 'Inhalt verbergen';
+    } else {
+      content.style.display = 'none';
+      btn.textContent = 'Inhalt anzeigen';
+    }
   }
 </script>
 
 {% else %}
 <p>Keine Notizen vorhanden.</p>
-{% endif %} {% endblock %}
+{% endif %} 
+{% endblock %}
