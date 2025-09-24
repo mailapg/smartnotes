@@ -38,11 +38,13 @@ def get_notes_router(collection: Collection):
         notes = list(collection.find(query).sort("created_at", -1))
         for note in notes:
             note["created_at"] = _fmt(note["created_at"])
+            if "updated_at" in note:
+                note["updated_at"] = _fmt(note["updated_at"])
         all_tags = collection.distinct("tags")
         return templates.TemplateResponse(
             "list.html",
             {
-                "request": request,
+              "request": request,
                 "notes": notes,
                 "all_tags": all_tags,
                 "active_tags": active_tags,
@@ -58,6 +60,8 @@ def get_notes_router(collection: Collection):
         note = random.choice(notes) if notes else None
         if note:
             note["created_at"] = _fmt(note["created_at"])
+            if "updated_at" in note:
+                note["updated_at"] = _fmt(note["updated_at"])
         return templates.TemplateResponse("random.html", {"request": request, "note": note})
     
     @router.get("/edit/{note_id}")
@@ -66,6 +70,8 @@ def get_notes_router(collection: Collection):
         if not note:
             raise HTTPException(status_code=404, detail="Notiz nicht gefunden")
         note["created_at"] = _fmt(note["created_at"])
+        if "updated_at" in note:
+            note["updated_at"] = _fmt(note["updated_at"])
         return templates.TemplateResponse("edit.html", {"request": request, "note": note})
     
     @router.post("/create")
@@ -95,12 +101,14 @@ def get_notes_router(collection: Collection):
             {"$set": {
                 "title": title,
                 "content": content,
-                "tags": [tag.strip() for tag in tags.split(",") if tag.strip()]
+                "tags": [tag.strip() for tag in tags.split(",") if tag.strip()],
+                "updated_at": datetime.now(timezone.utc)
             }}
         )
         if updated.matched_count == 0:
             raise HTTPException(status_code=404, detail="Notiz nicht gefunden")
         return RedirectResponse(url="/list", status_code=303)
+    
     @router.delete("/delete/{note_id}")
     def delete_note(note_id: str):
         deleted = collection.delete_one({"_id": ObjectId(note_id)})

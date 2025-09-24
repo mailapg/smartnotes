@@ -24,6 +24,10 @@
 <h3>{{ note.title }}</h3>
 <p>{{ note.content }}</p>
 <small>Erstellt am: {{ note.created_at }}</small>
+  {% if note.updated_at %}
+<br>
+<small>Zuletzt geändert am: {{ note.updated_at }}</small>
+  {% endif %}
 <div class="tags">
     {% for tag in note.tags %}
 <span class="tag">{{ tag }}</span>
