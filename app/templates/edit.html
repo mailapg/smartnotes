@@ -1,16 +1,24 @@
-{% extends "index.html" %}
-
-{% block content %}
+{% extends "index.html" %} {% block content %}
 <h1><i class="fa-solid fa-code-branch"></i> Notiz bearbeiten</h1>
 
 <form action="/edit/{{ note._id }}" method="post">
-  <input type="text" name="title" placeholder="Titel" value="{{ note.title }}" required>
+  <input
+    type="text"
+    name="title"
+    placeholder="Titel"
+    value="{{ note.title }}"
+    required />
 
-  <textarea name="content" placeholder="Inhalt" rows="5" required>{{ note.content }}</textarea>
+  <textarea name="content" placeholder="Inhalt" rows="5" required>
+{{ note.content }}</textarea
+  >
 
-  <input type="text" name="tags" placeholder="Tags (Komma getrennt)" 
-         value="{{ note.tags | join(', ') }}">
+  <input
+    type="text"
+    name="tags"
+    placeholder="Tags (Komma getrennt)"
+    value="{{ note.tags | join(', ') }}" />
 
-  <button type="submit">Aktualisieren</button>
+  <button type="submit" class="btn-action">Aktualisieren</button>
 </form>
 {% endblock %}
