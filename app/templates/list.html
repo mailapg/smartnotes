@@ -1,36 +1,112 @@
-{% extends "index.html" %} {% block content %}
+{% extends "index.html" %}
+{% block content %}
 <h1><i class="fa-solid fa-code-branch"></i> Alle Notizen</h1>
-
+ 
+<div class="filter-tags">
+<h3>Filter:</h3>
+<div class="tags">
+    {% for tag in all_tags %}
+<button 
+        type="button"
+        class="tag-btn {% if tag in active_tags %}active{% endif %}"
+        onclick="toggleTag('{{ tag }}')">
+        {{ tag }}
+</button>
+    {% endfor %}
+<a href="/list" class="btn btn-reset">Reset</a>
+</div>
+</div>
+ 
+<hr />
+ 
 {% for note in notes %}
 <div class="note">
-  <h3>{{ note.title }}</h3>
-  <p>{{ note.content }}</p>
-  <small>Erstellt am: {{ note.created_at }}</small>
-  <div class="tags">
+<h3>{{ note.title }}</h3>
+<p>{{ note.content }}</p>
+<small>Erstellt am: {{ note.created_at }}</small>
+  {% if note.updated_at %}
+<br>
+<small>Zuletzt geändert am: {{ note.updated_at }}</small>
+  {% endif %}
+<div class="tags">
     {% for tag in note.tags %}
-    <span class="tag">{{ tag }}</span>
+<span class="tag">{{ tag }}</span>
     {% endfor %}
-  </div>
-
-  <div class="note-actions">
-    <a href="/edit/{{ note._id }}" class="btn btn-edit">
-      <i class="fa-solid fa-pen"></i
-    ></a>
-    <a
-      href="#"
-      class="btn btn-delete"
-      onclick="deleteNote('{{ note._id }}')">
-      <i class="fa-solid fa-trash"></i
-    ></a>
-
-    <script>
-      async function deleteNote(id) {
-        if (confirm('Diese Notiz wirklich löschen?')) {
-          await fetch(`/delete/${id}`, { method: 'DELETE' });
-          window.location.href = '/list';
-        }
-      }
-    </script>
-  </div>
 </div>
-{% endfor %} {% endblock %}
+ 
+  <div class="note-actions">
+<a href="/edit/{{ note._id }}" class="btn btn-edit">
+<i class="fa-solid fa-pen"></i>
+</a>
+<a href="#" class="btn btn-delete" onclick="deleteNote('{{ note._id }}')">
+<i class="fa-solid fa-trash"></i>
+</a>
+</div>
+</div>
+{% endfor %}
+ 
+<script>
+  // Aktive Tags aus der URL holen
+  let activeTags = new URLSearchParams(window.location.search).get("tags");
+  activeTags = activeTags ? activeTags.split(",") : [];
+ 
+  function toggleTag(tag) {
+    if (activeTags.includes(tag)) {
+      activeTags = activeTags.filter(t => t !== tag);
+    } else {
+      activeTags.push(tag);
+    }
+    const url = activeTags.length > 0
+      ? `/list?tags=${activeTags.join(",")}`
+      : "/list";
+    window.location.href = url;
+  }
+ 
+  async function deleteNote(id) {
+    if (confirm('Diese Notiz wirklich löschen?')) {
+      await fetch(`/delete/${id}`, { method: 'DELETE' });
+      window.location.href = '/list';
+    }
+  }
+</script>
+ 
+<style>
+  .tag-btn {
+    margin: 4px;
+    padding: 8px 14px;
+    border: 2px solid #888;
+    border-radius: 20px;
+    background: #84919a;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 14px;
+  }
+ 
+  .tag-btn:hover {
+    background: #cad9e8;
+  }
+ 
+  .tag-btn.active {
+    background: #28a745;       /* kräftiges Grün */
+    color: #fff;
+    border-color: #1e7e34;
+    box-shadow: 0 0 5px rgba(40,167,69,0.6);
+  }
+ 
+  .btn-reset {
+    margin-left: 10px;
+    text-decoration: none;
+    padding: 8px 14px;
+    background: #84919a;       /* Rot für Reset */
+    color: #fff;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+  }
+ 
+  .btn-reset:hover {
+    background: #4f575d;
+  }
+</style>
+{% endblock %}
