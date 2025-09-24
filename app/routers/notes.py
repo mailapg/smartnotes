@@ -28,13 +28,18 @@ def get_notes_router(collection: Collection):
         return templates.TemplateResponse("home.html", {"request": request})
     
     @router.get("/list")
-    def list_notes(request: Request, tags: Optional[str] = Query(None)):
+    def list_notes(request: Request, tags: Optional[str] = Query(None), q: Optional[str] = Query(None)):
         query = {}
         active_tags = []
         if tags:
             active_tags = [tag.strip() for tag in tags.split(",") if tag.strip()]
             if active_tags:
-                query = {"tags": {"$all": active_tags}}
+                query["tags"] = {"$all": active_tags}
+        if q:
+            query["$or"] = [
+                {"title": {"$regex": q, "$options": "i"}},
+                {"content": {"$regex": q, "$options": "i"}},
+            ]
         notes = list(collection.find(query).sort("created_at", -1))
         for note in notes:
             note["created_at"] = _fmt(note["created_at"])
@@ -48,6 +53,7 @@ def get_notes_router(collection: Collection):
                 "notes": notes,
                 "all_tags": all_tags,
                 "active_tags": active_tags,
+                "search_query": q or "",
             },
         )
     @router.get("/create")
